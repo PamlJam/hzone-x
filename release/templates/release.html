@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    hzone | 发布
+{% endblock %}
+
+{% block main %}
+    <div class="alert alert-info alert-dismissible" role="alert">
+    <!-- 提示框 -->
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <!-- 允许关闭 ❎ -->
+        <strong>温馨提示 </strong> hzone作为信息分享、交流的服务平台，为用户提供原创信息的储存空间服务
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <ul class="nav nav-pills">
+            <!-- 胶囊导航 -->
+                <li id='wz' role="presentation" class='active'><a href="#">文章</a></li>
+                <li id='wp' role="presentation"><a href="#">物品</a></li>
+            </ul>
+        </div>
+        <div class="panel-body" id ='page'>
+        <!-- 内嵌标签页 -->
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %} 
+    <script>
+        function loadPage(url){
+        // 加载网页
+            var page = '<iframe src=' + url + 
+            // 内嵌页面
+            ' height = "800px" width = "100%" scrolling = "no" frameborder = "0"></iframe>';
+            // 设置属性
+            $('#page').html(page);
+        }
+        var wz = $('#wz');
+        var wp = $('#wp');
+        loadPage('/release/article');
+        // 初始界面
+        wz.click(function(){
+            wz.addClass('active');
+            // 增加类
+            wp.removeClass('active');
+            // 移除类
+            loadPage('/release/article');
+        })
+        wp.click(function(){
+            wp.addClass('active');
+            wz.removeClass('active');
+            loadPage('/release/shangping');
+        })
+    </script>
+{% endblock %}

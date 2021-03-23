@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+    {% load static %}
+    {% block title %}
+        hzone | 空间
+    {% endblock %}
+    {% block main %}
+        <div class="panel panel-default">
+        <!-- 基础面板 -->
+            <div class="panel-body">
+                <div class="media">
+                <!-- 媒体对象 -->
+                    <div class="media-left media-middle">
+                        <img id = 'icon' class="img-circle" src="/{{ user.icon }}" height="100px" width="100px">
+                        {% if user == visitor %}
+                            <img id = 'hover_icon' class="img-circle" src="{% static 'image/icon/default/upload.jpg' %}" height="100px" width="100px">
+                            <!-- 圆形显示头像 -->
+                        {% endif %}
+                    </div>
+                    <div class="media-body">
+                        <h1 class="media-heading">{{ user }}</h1>
+                        <form id='user_form' enctype="multipart/form-data" action="./{{ user.id }}" method="post">
+                        <!-- 确认编码格式 以二进制上传文件 -->
+                            {% csrf_token %}
+                            <!-- 表单验证 -->
+                            <input type="file" name="icon" accept="image/*" id="id_icon" >
+                            <!-- 重写模板表单 便于自定义样式 -->
+                            <input type="text" name="motto" id="id_motto" placeholder = "{{ user.motto }}" class="form-control">
+                            <button id = "submit_btn" type="submit"></button>
+                            <!-- 提交按钮-不显示 -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>共 {{ atcs.count }} 篇文章 <span class="label label-info">上次发布于 {{ atcs.first.create_time }}</span></h4>
+            </div>
+        </div>
+
+        {% if user == visitor %}
+        <!-- 验证身份 -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <button  id='exit' type="button" class="btn btn-default" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-log-out" aria-hidden="true">（登出）</span>
+                    </button>
+                    <button type="button" class="btn btn-default" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true">（注销）</span>
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endblock %}
+
+    {% block js %}
+        <script>
+            $('#id_icon').hide();
+            $('#hover_icon').hide();
+            $('#submit_btn').hide();
+            // 隐藏控件
+            $("#id_motto").attr("disabled","disabled");
+            // 禁止编辑
+        </script>
+        {% if user == visitor %}
+            <script>
+                $("#id_motto").removeAttr("disabled");
+                // 允许编辑
+                $("#icon").hover(function() {
+                // 鼠标悬浮 切换图片
+                    $('#hover_icon').show();
+                    $('#icon').hide();
+                    // 复现
+                }, function(){
+                // 移出范围
+                    $('#hover_icon').hide();
+                    $('#icon').show();
+                });
+                $('#hover_icon').click(function(){
+                // 监测点击
+                    $('#id_icon').click();
+                    // 模拟点击
+                });
+                $("#id_icon").bind('input porpertychange', function () {
+                // 监测文件变化
+                    $('#submit_btn').click();
+                    // 自动提交
+                });
+                $("#id_motto").blur(function(){
+                // 输入框失去鼠标焦点
+                    $('#submit_btn').click();
+                });
+            </script>
+        {% endif %}
+
+        <script>
+            $('#exit').click(function(){
+                var r = confirm("是否退出");
+                // 确认框
+                if (r) {
+                    window.location.href = "/user/exit";
+                }
+                else {
+                    return false;
+                    // 阻止登出
+                }
+            });
+        </script>
+        
+    {% endblock %}

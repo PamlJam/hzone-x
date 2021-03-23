@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    hzone | 登录
+{% endblock %}
+
+{% block main %}
+    <div class="jumbotron">
+    <!-- 巨幕 -->
+        <h1>访客您好</h1>
+        <p>HZONE是为大学生建立的交流平台 在这里你可以...</p>
+        <p><a class="btn btn-info btn-lg" href="/user/sign-up" role="button">暂无帐号 先去注册</a></p>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <form id='form' action="/user/sign-in" method='post'>
+            <!-- 填写注册信息 -->
+            {% csrf_token %}
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">😀</span>
+                    <input required id="id_un" name="un" type="text"
+                        class="form-control" placeholder="输入用户名">
+                </div>
+                <br>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">🔑</span>
+                    <input required id="id_pw" name="pw" type="password"
+                    class="form-control" placeholder="输入密码">
+                </div>
+                <br>
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-default">点击登录</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id='info' type="button" class="btn btn-default">入站须知</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        var form = $('#form');
+        form.submit(function(){
+            var un = $('#id_un').val();
+            var pw = $('#id_pw').val();
+            $.ajax({
+                url : form.attr('href'),
+                type : form.attr('method'),
+                data:form.serialize(),
+                cache:false,
+                success:function(context){
+                    var s =  context['status'];
+                    
+                    if (s=='erro'){
+                        alert('用户名或密码错误');
+                    }
+                    if (s=='succ'){
+                        alert('登录成功');
+                        window.location.href = "/";
+                        // 页面跳转
+                    }
+                },
+            });
+            return false;
+        })
+    </script>
+
+    <script>
+        $('#info').click(function(){
+        // 点击按钮 弹出窗口
+            window.open("sign-info", "newwindow", "height=400, width=500, top=200, left=200")
+            // 设置 页名、宽高、位置
+        })
+    </script>
+{% endblock %}

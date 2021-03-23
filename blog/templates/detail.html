@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+    
+    {% block title %}
+        hzone | 文章
+    {% endblock %}
+
+    {% block main %}
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <a href=""><span class="label label-primary">{{ atc.type }}</span></a>
+                <!-- 标签样式 -->
+            </div>
+            <div class="panel-body">
+                <h3 class = "text-center">{{ atc.title }}</h3>
+                <!-- 标题居中 -->
+                <p>{{ atc.content }}</p>
+                <p class="text-right"><font color = lightblue>发布于{{ atc.create_time }}</font></p>
+                <!-- 设置字体 -->
+                <p class="text-right"><font color = lightblue>编辑于{{ atc.update_time }}</font></p>
+            </div>
+        </div>
+        
+        <div class="panel panel-info">
+        <!-- 评论面板 -->
+            <div class="panel-heading">评论列表</div>
+            <div class="panel-body">
+                <form id='text_form' action='/blog/{{ atc.id }}' method="POST">
+                    {% csrf_token %}
+                    <!-- 验证通过 -->
+                    <input type="text" name="text" maxlength="30" minlength="2" required id="id_text">
+                    <!-- 重写表单 -->
+                    <button class="btn btn-default" type="submit">提交</button>
+                </form>
+            </div>
+            <table id='comment_list' class="table table-striped table-bordered table-hover dataTables-example" 
+            style="word-break:break-all; word-wrap:break-all;table-layout:fixed">
+            <!-- 表格设置样式 允许换行-->
+                <tr>
+                    <th style="width:10%">用户</th>
+                    <th style="width:80%">内容</th>
+                    <th style="width:10%">时间</th>
+                    <!-- 设置宽度 -->
+                </tr>
+                {% for comment in cms %}
+                <!-- 遍历填表 -->
+                    <tr>
+                        <td><a href="/user/{{ comment.user.id }}">{{ comment.user.username }}</a></td>
+                        <td>{{ comment.text }}</td>
+                        <td>{{ comment.time | date:"m-d"}}</td>
+                        <!-- 设置格式 like 03-17 -->
+                    </tr>
+                {% empty %}
+                <!-- 列表为空 -->
+                    <tr>
+                        <td>NaN</td>
+                        <td>NaN</td>
+                        <td>NaN</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endblock %}
+
+    {% block side %}
+    <!-- 侧边框 -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="/user/{{ atc.author.id }}">
+                            <img class="img-circle" src="/{{ atc.author.icon }}" height="100px" width="100px">
+                        </a>
+                    </div>
+                    <div class="col-md-8">
+                        <h1>{{ atc.author.username }}</h1>
+                        <h4></h4>
+                        <font color = gray>{{ atc.author.motto }}</font>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block js %}
+        <script>
+            var form = $('#text_form');
+            // 定位元素
+            form.submit(function(){
+            // 异步提交
+                $.ajax({
+                    url:form.attr("action"),
+                    // 请求地址
+                    type:form.attr("method"),
+                    // 请求方式
+                    data:$(this).serialize(),
+                    // 表单序列化
+                    cache:false,
+                    // 缓存关闭
+                    success:function(){
+                    // 回调函数 
+                        $("#comment_list").load(location.href + " #comment_list");
+                        // 局部刷新列表
+                        $('#id_text').val('');
+                        // 清空输入
+                    },
+                });
+                return false;
+                // 阻止跳转
+            })
+        </script>
+    {% endblock %}
+
+

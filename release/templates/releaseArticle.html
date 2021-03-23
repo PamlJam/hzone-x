@@ -1,0 +1,59 @@
+{% extends 'bootstrap3.html' %}
+    {% block body %}
+        <form id='article_form' action="/release/article" method='post'>
+        {% csrf_token %}
+            <input name="tt" id="id_tt" style='width:100%;height:50px' type="text" required placeholder='请输入文章标题'>
+            <!-- 文本框 -->
+            <br><br>
+            <textarea name="ct" id="id_ct" style='width:100%;height:600px' required placeholder='开始写作~'></textarea>
+            <!-- 文本区域 -->
+            <br><br>
+            选择分类
+            <select name="tp" id="id_tp" style='width:30%;height:30px'>       
+            <!-- 下拉选择框 -->
+                <option value="0">随笔</option>
+
+                <option value="1">技术</option>
+
+                <option value="2">生活</option>
+
+                <option value="3">兴趣</option>
+
+                <option value="4">学习</option>
+
+                <option value="5">娱乐</option>
+            </select>
+            <button type='submit' style='width:30%;height:30px'>发表</button>
+        </form>
+    {% endblock %}
+
+    {% block js %}
+        <script>
+            var form = $('#article_form')
+
+            form.submit(function(){
+                var result = confirm("您是否打算现在发表")
+
+                if (result==true){
+                    $.ajax({
+                        url:form.attr('href'),
+                        type:form.attr('method'),
+                        data:form.serialize(),
+                        cache:false,
+                        success:function(context){
+                            $('#id_tt').val('')
+                            $('#id_ct').val('')
+                            // 清空内容
+                            var result = confirm("发表成功，是否前去查看")
+
+                            if (result == true){ 
+                                top.location.href = "/blog";
+                                // 父级窗口跳转**
+                            }
+                        },
+                    })
+                }
+                return false
+            })
+        </script>
+    {% endblock %}
