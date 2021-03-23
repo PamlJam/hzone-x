@@ -20,11 +20,8 @@ class Atc(Model):
     
     def __str__(self):
         return '文章-' + self.title
-        
     class Meta:
         ordering=['-create_time']
         # 排序
-        
         verbose_name = '博客'
-        
         verbose_name_plural = '博客'

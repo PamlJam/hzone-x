@@ -4,6 +4,24 @@ from django.shortcuts import *
 from django.views.generic import *
 from .forms import *
 
+
+class ArticleDelete(View):
+# 删除内容
+    def get(self,request):
+        pk = request.GET.get('pk',default = None)
+        if pk:
+            atc = get_object_or_404(Atc,pk = int(pk))
+            # 获取文章
+            if atc.author == request.user:
+            # 验证权限
+                atc.delete()
+                # 删除模型 （实际删除）
+        return redirect('/user/' + str(request.user.id))
+
+class ArticleEdit(View):
+    def get(self,request):
+        pass
+
 class ReleaseArticle(View):
     def get(self,request):
         return render(request,'releaseArticle.html',{

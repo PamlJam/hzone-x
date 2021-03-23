@@ -18,7 +18,9 @@ class Room(View):
         # 请求对象
         context = {
             'visitor' :request.user,
+            # 访客
             'user' : user,
+            # 主人
             'form' : form,
             'atcs' : Atc.objects.filter(author = user),
         }
