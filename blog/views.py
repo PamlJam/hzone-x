@@ -32,7 +32,7 @@ class List(View):
         p = Paginator(atcs,5)
         # 设置分页
         n = request.GET.get("p",default = 1)
-        
+        # 获取页码
         context = {
             'form' : SearchForm(request.GET),
             'atcs' : p.get_page(n),

@@ -19,8 +19,6 @@
                 </form>
             </div>
         </div>
-
-
         {% for atc in atcs %}
         <!-- 遍历文章 -->
             <div class="panel panel-default">
@@ -35,7 +33,7 @@
                         <a href="/blog/{{ atc.id }}">
                             <h3 class="media-heading">{{ atc.title }}</h3>
                         </a>
-                        <h4>{{ atc.content |truncatechars:100}}</h4>
+                        <h4>{{ atc.content  | striptags | safe |truncatechars:100}}</h4>
                     </div>
                 </div>
             </div>
