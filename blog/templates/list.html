@@ -23,24 +23,30 @@
         {% for atc in atcs %}
         <!-- 遍历文章 -->
             <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="media">
-                    <div class="media-left">
-                        <a href="/user/{{ atc.author.id }}">
-                            <img class="img-circle" src="/{{ atc.author.icon }}" height="100px" width="100px">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <a href="/blog/{{ atc.id }}">
-                            <h3 class="media-heading">{{ atc.title }}</h3>
-                        </a>
-                        <h4>{{ atc.content |truncatechars:100}}</h4>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="/user/{{ atc.author.id }}">
+                                <img class="img-circle" src="/{{ atc.author.icon }}" height="100px" width="100px">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <a href="/blog/{{ atc.id }}">
+                                <h3 class="media-heading">{{ atc.title }}</h3>
+                            </a>
+                            <h4>{{ atc.content | striptags | safe | truncatechars:100 }}</h4>
+                            <!-- 禁止显示标签语法 + 限制字段长度 -->
+                        </div>
                     </div>
                 </div>
             </div>
+        {% empty %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    暂无文章
+                </div>
             </div>
         {% endfor %}
-
         <div class="text-center">
         <!-- 居中 -->
             <nav aria-label="Page navigation">

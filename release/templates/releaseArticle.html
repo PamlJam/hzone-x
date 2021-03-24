@@ -2,11 +2,11 @@
     {% block body %}
         <form id='article_form' action="/release/article" method='post'>
         {% csrf_token %}
-            <input name="tt" id="id_tt" style='width:100%;height:50px' type="text" required placeholder='请输入文章标题'>
-            <!-- 文本框 -->
+            <input name="tt" id="id_tt" style='width:100%;height:50px' type="text" required value = '{{ ex_tt }}' placeholder='请输入文章标题'>
+            <!-- 文本框 （原始内容可有可无）-->
             <br><br>
-            <textarea name="ct" id="id_ct" style='width:100%;height:600px' required placeholder='开始写作~'></textarea>
-            <!-- 文本区域 -->
+            <textarea name="ct" id="id_ct" style='width:100%;height:600px' required placeholder='开始写作~'>{{ ex_ct }}</textarea>
+            <!-- 文本区域（原始内容可有可无） -->
             <br><br>
             选择分类
             <select name="tp" id="id_tp" style='width:30%;height:30px'>       

@@ -13,7 +13,7 @@
             <div class="panel-body">
                 <h3 class = "text-center">{{ atc.title }}</h3>
                 <!-- 标题居中 -->
-                <p>{{ atc.content }}</p>
+                <p>{{ atc.content | safe }}</p>
                 <p class="text-right"><font color = lightblue>发布于{{ atc.create_time }}</font></p>
                 <!-- 设置字体 -->
                 <p class="text-right"><font color = lightblue>编辑于{{ atc.update_time }}</font></p>
