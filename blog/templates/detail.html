@@ -13,13 +13,17 @@
             <div class="panel-body">
                 <h3 class = "text-center">{{ atc.title }}</h3>
                 <!-- 标题居中 -->
+                <hr>
                 <p>{{ atc.content | safe }}</p>
-                <p class="text-right"><font color = lightblue>发布于{{ atc.create_time }}</font></p>
-                <!-- 设置字体 -->
-                <p class="text-right"><font color = lightblue>编辑于{{ atc.update_time }}</font></p>
+                {% if atc.create_time == atc.update_time%}
+                <!-- 不同时显示 -->
+                    <p class="text-right"><font color = gray>发布于{{ atc.create_time }}</font></p>
+                    <!-- 设置字体 -->
+                {% else %}
+                    <p class="text-right"><font color = gray>编辑于{{ atc.update_time }}</font></p>
+                {% endif %}
             </div>
         </div>
-        
         <div class="panel panel-info">
         <!-- 评论面板 -->
             <div class="panel-heading">评论列表</div>
@@ -79,7 +83,6 @@
                 </div>
             </div>
         </div>
-
         <div class="panel panel-info">
         <!-- 目录 -->
             <div class="panel-heading">

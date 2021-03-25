@@ -13,7 +13,7 @@ class AtcType(Model):
 class Atc(Model):
     title = CharField(max_length=30)
     content = TextField()
-    toc = TextField(default='')
+    toc = TextField(default= '''<div class="toc"><ul></ul></div>''')
     # 文章目录
     author = ForeignKey(User,on_delete = DO_NOTHING)
     create_time = DateTimeField(auto_now_add=True)

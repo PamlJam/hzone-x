@@ -5,6 +5,8 @@ from django.views.generic import *
 from .forms import *
 import markdown
 from tomd import Tomd
+from django.contrib.contenttypes.models import ContentType
+from comment.models import Comment
 
 class ArticleDelete(View):
 # 删除内容
@@ -15,6 +17,10 @@ class ArticleDelete(View):
             # 获取文章
             if atc.author == request.user:
             # 验证权限
+                content_type = ContentType.objects.get_for_model(atc)
+                comments = Comment.objects.filter(content_type = content_type,object_id = atc.pk)
+                comments.delete()
+                # 删除所有互动（评论）
                 atc.delete()
                 # 删除模型 （实际删除）
         return redirect('/user/' + str(request.user.id))
@@ -28,9 +34,11 @@ class ArticleEdit(View):
             atc = get_object_or_404(Atc,pk = int(pk))
             if atc.author == request.user:
                 context['ex_tt'] = atc.title
-                atc.content = Tomd(atc.content).markdown
-                # 二次反转格式 -> markdown
-                context['ex_ct'] = atc.content 
+                if Tomd(atc.content).markdown:
+                # 若原始内容包含html内容格式
+                    atc.content = Tomd(atc.content).markdown
+                    # 二次反转格式 -> markdown
+                context['ex_ct'] = atc.content
         request.session['atc_pk'] = atc.pk
         request.session['ex_atc'] = context
         # 存入原始数据
