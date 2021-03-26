@@ -33,7 +33,7 @@
                             <a href="/blog/{{ atc.id }}">
                                 <h3 class="media-heading">{{ atc.title }}</h3>
                             </a>
-                            <h4>{{ atc.content | striptags | safe | truncatechars:100 }}</h4>
+                            <h4>{{ atc.content_html | striptags | safe | truncatechars:100 }}</h4>
                             <!-- 禁止显示html标签语法 + 限制字段长度 -->
                         </div>
                     </div>

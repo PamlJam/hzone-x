@@ -10,6 +10,18 @@ from search.forms import SearchForm
 from search.common import commonSearch
 from django.db.models.aggregates import Count
 from django.core.paginator import Paginator
+import markdown
+
+md = markdown.Markdown(
+# 语法转换器（全局变量）
+    extensions = [
+    # 拓展语法
+        'markdown.extensions.extra',
+        # 常用设置
+        'markdown.extensions.toc',
+        # 添加标签
+    ]
+)
 
 class SearchList(View):
     def get(self,request):
@@ -17,7 +29,12 @@ class SearchList(View):
         form = SearchForm(request.GET)
         if form.is_valid():
             keywords = form.cleaned_data['keywords']
-            context['atcs'] = commonSearch(Atc,'title',keywords)
+            atcs = commonSearch(Atc,'title',keywords)
+            # 调用查询函数（自定义）
+            for atc in atcs:
+            # 批量添加属性
+                atc.content_html = md.convert(atc.content)
+            context['atcs'] = atcs
         return render(request,'searchlist.html',context)
 
 class List(View):
@@ -29,6 +46,10 @@ class List(View):
             atcs = Atc.objects.filter(type = type)
         else:
             atcs = Atc.objects.all()
+        for atc in atcs:
+        # 批量操作（添加属性）
+            atc.content_html = md.convert(atc.content)
+            # 转为html标签
         p = Paginator(atcs,5)
         # 设置分页
         n = request.GET.get("p",default = 1)
@@ -44,16 +65,20 @@ class List(View):
 
 class Detail(View):
     def ret(self,request,pk):
-    # 获取字典
+    # 获取公共字典
         article = get_object_or_404(Atc,pk = pk)
         content_type = ContentType.objects.get_for_model(article)
         # 对象的类
         comments = Comment.objects.filter(content_type = content_type,object_id = article.pk)
         # 获取评论
+        content = md.convert(article.content)
+        # 转换格式
         context = {
             'atc' : article,
             'cms' : comments,
             'type' : content_type,
+            'toc' : md.toc,
+            'content' : content,
         }
         return context
 

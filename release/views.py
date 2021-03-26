@@ -3,8 +3,6 @@ from django.http.response import JsonResponse
 from django.shortcuts import *
 from django.views.generic import *
 from .forms import *
-import markdown
-from tomd import Tomd
 from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
 
@@ -34,11 +32,9 @@ class ArticleEdit(View):
             atc = get_object_or_404(Atc,pk = int(pk))
             if atc.author == request.user:
                 context['ex_tt'] = atc.title
-                if Tomd(atc.content).markdown:
-                # 若原始内容包含html内容格式
-                    atc.content = Tomd(atc.content).markdown
-                    # 二次反转格式 -> markdown
+                # 获取已有标题
                 context['ex_ct'] = atc.content
+                # 获取原有文章
         request.session['atc_pk'] = atc.pk
         request.session['ex_atc'] = context
         # 存入原始数据
@@ -60,48 +56,29 @@ class ReleaseArticle(View):
         return render(request,'releaseArticle.html',context)
 
     def post(self,request):
-        md = markdown.Markdown(
-        # 语法转换器
-            extensions = [
-            # 拓展语法
-                'markdown.extensions.extra',
-                # 常用设置
-                'markdown.extensions.toc',
-                # 添加标签
-            ]
-        )
         form = ArticleForm(request.POST)
         if form.is_valid():
             tt = form.cleaned_data['tt']
             ct = form.cleaned_data['ct']
-            # 文章内容
-            ct = md.convert(ct)
-            ct = Tomd(ct).markdown
-            ct = md.convert(ct)
-            # 反复的格式转换 **** 
-            # md、html语法混合 —> markdown —> html
-            toc = md.toc
-            # 获取目录 —> html
             tp = form.cleaned_data['tp']
-            # 获取分类编号
+            # 分类编号
             tp = AtcType.objects.all()[int(tp)]
-            # 获取分类对象
+            # 分类对象
             pk = request.session.get('atc_pk',default = None)
             # 会话取值
             if pk != None:
-            # 判断请求来源
+            # 请求来源
                 exAtc = get_object_or_404(Atc,pk = pk)
                 exAtc.title = tt
                 exAtc.content = ct
                 exAtc.type = tp
-                exAtc.toc = toc
                 exAtc.author = request.user
                 exAtc.save()
                 request.session['atc_pk'] = None
                 # 总是清空 **
             else:
-                Atc(title= tt,content= ct,type = tp,toc = toc,author = request.user).save()
-                # 生成文章对象
+                Atc(title= tt,content= ct,type = tp,author = request.user).save()
+                # 文章对象
         return JsonResponse({})
 
 class Release(View):

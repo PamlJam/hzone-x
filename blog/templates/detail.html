@@ -14,7 +14,8 @@
                 <h3 class = "text-center">{{ atc.title }}</h3>
                 <!-- 标题居中 -->
                 <hr>
-                <p>{{ atc.content | safe }}</p>
+                <p>{{ content | safe }}</p>
+                <!-- 已经转换为html标签了 -->
                 {% if atc.create_time == atc.update_time%}
                 <!-- 不同时显示 -->
                     <p class="text-right"><font color = gray>发布于{{ atc.create_time }}</font></p>
@@ -89,7 +90,7 @@
                 <h3 class="panel-title">目录</h3>
             </div>
             <div class="panel-body">
-                {{ atc.toc | safe }}
+                {{ toc | safe }}
             </div>
         </div>
     {% endblock %}
