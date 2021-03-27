@@ -10,7 +10,6 @@ class AtcTypeAdmin(admin.ModelAdmin):
         'info',
         'time',
         'chop',
-        'link',
         'owner',
         'price',
         'count',

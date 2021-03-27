@@ -16,20 +16,60 @@
                     </button>
                 </span>
             </div>
-            
             <br>
-            <button type="button" class="btn btn-primary">
-                价格排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-primary">
-                时间排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-primary">
-                浏览排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-primary">
-                只看可刀 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-            </button>
+            {% if sort == 'price' %}
+                <a href="/deal?sort=-price">
+                    <button id='price' type="button" class="btn btn-primary active">
+                        价格升序 <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% elif sort == '-price' %}
+                <a href="/deal">
+                    <button id='price' type="button" class="btn btn-primary active">
+                        价格降序 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% else %}
+                <a href="/deal/?sort=price">
+                    <button id='price' type="button" class="btn btn-primary">
+                        价格排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% endif %}
+            <!-- 形成闭环 -->
+            {% if sort == 'time' %}
+                <a href="/deal?sort=-time">
+                    <button type="button" class="btn btn-primary active">
+                        时间升序 <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% elif sort == '-time' %}
+                <a href="/deal">
+                    <button type="button" class="btn btn-primary active">
+                        时间降序 <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% else %}
+                <a href="/deal?sort=time">
+                    <button type="button" class="btn btn-primary">
+                        时间排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% endif %}
+
+            {% if chop != '1' %}
+                <a href="/deal?chop=1">
+                    <button id='chop' type="button" class="btn btn-primary">
+                        只看可刀 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% else %}
+                <a href="/deal">
+                    <button id='chop' type="button" class="btn btn-primary active">
+                        只看可刀 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                    </button>
+                </a>
+            {% endif %}            
         </div>
     </div>
     {% for item in items %}
@@ -44,13 +84,17 @@
                             <!-- 图片添加圆角 -->
                     </div>
                     <div class="media-body">
-                        <strong>
-                            {{ item.name }}
-                        </strong>
+                        <h4>{{ item.name }}</h4>
+                        <hr>    
+                        <em>
+                        <!-- 斜体字 -->
+                            <font style="color:grey" size="2">
+                            <!-- 其他字体属性 -->
+                                {{ item.info }}
+                            </font> 
+                        </em>
                         <hr>
-                        ￥ <font style="color:grey" size="5" face="Verdana">{{ item.price }}</font> 
-                        <hr>
-                        <em>{{ item.info }}</em>
+                        ￥ <font size="4" face="Verdana">{{ item.price }}</font> 
                     </div>
                 </div>
             </div>
@@ -63,10 +107,7 @@
                 {% endif %}
                 <span class="label label-warning">{{ item.time | date:"Y-m-d" }}</span>
                 <a target = "_blank" href="/user/{{item.owner.id}}">
-                    <span class="label label-info">卖家信息</span>
-                </a>
-                <a href="">
-                    <span class="label label-info">联系方式</span>
+                    <span class="label label-info">卖家主页</span>
                 </a>
             </div>
         </div>

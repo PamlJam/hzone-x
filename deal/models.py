@@ -9,8 +9,6 @@ class Item(Model):
     # 状态（售出）
     chop = BooleanField(default=False)
     # 状态（可刀）
-    link = CharField(max_length=20)
-    # 联系方式
     count = IntegerField(default=1)
     # 数目
     owner = ForeignKey(User,on_delete = DO_NOTHING)
