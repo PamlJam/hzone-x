@@ -23,5 +23,6 @@ urlpatterns = [
     path('about/', About.as_view()),
     path('user/',include('user.urls')),
     path('blog/',include('blog.urls')),
+    path('deal/',include('deal.urls')),
     path('release/',include('release.urls')),
 ]

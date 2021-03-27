@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'user',
     'blog',
+    'deal',
     'comment',
     'release',
 ]

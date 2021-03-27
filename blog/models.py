@@ -24,6 +24,7 @@ class Atc(Model):
     class Meta:
         ordering=['-create_time']
         # 排序
-        verbose_name = '博客'
-        
-        verbose_name_plural = '博客'
+        verbose_name = '文章'
+        # 单数
+        verbose_name_plural = '文章'
+        # 复数
