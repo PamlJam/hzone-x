@@ -3,6 +3,7 @@ from .models import *
 from django.views.generic import *
 from django.shortcuts import *
 from .models import *
+from search.common import commonSearch
 
 class itemList(View):
     def get(self,request):
@@ -16,6 +17,12 @@ class itemList(View):
         # 排序条件
         if sort:
             items = items.order_by(sort)
+
+        search = request.GET.get('search',default = None)
+        # 搜索关键词
+        if search:
+            items = commonSearch(Item,'name',search)
+            # 调用自定义搜索函数
         context = {
             'items' : items,
             'chop' : chopable,

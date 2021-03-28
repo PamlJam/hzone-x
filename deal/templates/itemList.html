@@ -9,14 +9,19 @@
         <div class="panel-body">
             <div class="input-group">
             <!-- 输入框组 -->
-                <input type="text" class="form-control" placeholder="Search for Items ...">
+                <input id='search-input' type="text" class="form-control" placeholder="Search for Items ...">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
+                    <button id='search-button' class="btn btn-default" type="button">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                     </button>
                 </span>
             </div>
             <br>
+            <a href="/deal">
+                <button type="button" class="btn btn-info">
+                    所有商品 <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                </button>
+            </a>
             {% if sort == 'price' %}
                 <a href="/deal?sort=-price">
                     <button id='price' type="button" class="btn btn-primary active">
@@ -31,7 +36,7 @@
                 </a>
             {% else %}
                 <a href="/deal/?sort=price">
-                    <button id='price' type="button" class="btn btn-primary">
+                    <button id='price' type="button" class="btn btn-info">
                         价格排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
                     </button>
                 </a>
@@ -51,7 +56,7 @@
                 </a>
             {% else %}
                 <a href="/deal?sort=time">
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-info">
                         时间排序 <span class="glyphicon glyphicon-resize-vertical" aria-hidden="true"></span>
                     </button>
                 </a>
@@ -59,7 +64,7 @@
 
             {% if chop != '1' %}
                 <a href="/deal?chop=1">
-                    <button id='chop' type="button" class="btn btn-primary">
+                    <button id='chop' type="button" class="btn btn-info">
                         只看可刀 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                     </button>
                 </a>
@@ -111,5 +116,21 @@
                 </a>
             </div>
         </div>
+    {% empty %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3>暂无内容</h3>
+            </div>
+        </div>
     {% endfor %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('#search-button').click(function(){
+            var input = $('#search-input').val()
+            // 获取关键词
+            location.href = '?search=' + input
+        })
+    </script>
 {% endblock %}
