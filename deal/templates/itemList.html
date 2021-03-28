@@ -77,6 +77,9 @@
             {% endif %}            
         </div>
     </div>
+
+
+
     {% for item in items %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -85,7 +88,7 @@
                     <div class="media-left media-middle">
                     <!-- 靠左 垂直居中 -->
                         <img src="http://www.5h.com/m5h/s/hanbao/uploadfile/f9383a8b689d4b3bc3852ef9ddfc1f59.jpg"
-                            style="height:150px" class="media-object img-thumbnail" >
+                            style="height:200px" class="media-object img-thumbnail" >
                             <!-- 图片添加圆角 -->
                     </div>
                     <div class="media-body">
@@ -100,20 +103,60 @@
                         </em>
                         <hr>
                         ￥ <font size="4" face="Verdana">{{ item.price }}</font> 
+                        <hr>
+                        <span class="label label-default"> x {{ item.count }}</span>
+                        {% if item.chop %}
+                            <span class="label label-success">可刀</span>
+                        {% else %}
+                            <span class="label label-danger">不刀</span>
+                        {% endif %}
+                        <span class="label label-warning">{{ item.time | date:"Y-m-d" }}</span>
                     </div>
                 </div>
             </div>
+
             <div class="panel-footer">
-                <span class="label label-default"> x {{ item.count }}</span>
-                {% if item.chop %}
-                    <span class="label label-success">可刀</span>
-                {% else %}
-                    <span class="label label-danger">不刀</span>
-                {% endif %}
-                <span class="label label-warning">{{ item.time | date:"Y-m-d" }}</span>
+            <!-- 面板的底部 -->
                 <a target = "_blank" href="/user/{{item.owner.id}}">
-                    <span class="label label-info">卖家主页</span>
+                    <button type="button" class="btn btn-info btn-xs">主页</button>
                 </a>
+                <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-info btn-xs">
+                <!-- 下拉按钮 -->
+                评论  ↓</button>
+            </div>
+            <div id="replyArea-{{ forloop.counter }}" class="hidden">
+            <!-- 下拉评论区：默认隐藏 -->
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="向卖家咨询详细信息">
+                    <span class="input-group-btn">
+                        <button class="btn btn-info" type="button">发表</button>
+                    </span>
+                </div>
+                <table class="table">
+                <!-- 评论表格 -->
+                    <tr>
+                    <!-- 表头 -->
+                        <th width="10%">用户</th>
+                        <th width="75%">内容</th>
+                        <th width="15%">时间</th>
+                    </tr>
+                    {% for comment in item.comments %}
+                    <!-- 填表 -->
+                        <tr>
+                            <td>
+                                <a href="/user/{{comment.user.id}}">{{ comment.user }}</a>
+                            </td>
+                            <td>{{ comment.text }}</td>
+                            <td>{{ comment.time | date:"Y-m-d"}}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td></td>
+                            <td>暂无评论</td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </table>
             </div>
         </div>
     {% empty %}
@@ -132,5 +175,31 @@
             // 获取关键词
             location.href = '?search=' + input
         })
+    </script>
+
+    <script>
+        var len = {{ items.count }}
+        // 获取列表长度
+        for(var i=1;i<=len;i++){
+        // 循环绑定事件
+            (function (i) {
+                var area = $('#replyArea-' + i)
+                var button = $('#replyButton-' + i)
+                // 拼接元素
+                button.click(function(){
+                    if (area.attr("class")){
+                        area.removeAttr('class')
+                        // 移除属性
+                        button.text('评论 ↑')
+                        // 修改样式
+                    }
+                    else{
+                        area.attr("class","hidden")
+                        // 增加属性
+                        button.text('评论  ↓')
+                    }
+                })
+            })(i)
+        }
     </script>
 {% endblock %}
