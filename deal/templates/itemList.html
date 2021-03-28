@@ -78,8 +78,6 @@
         </div>
     </div>
 
-
-
     {% for item in items %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -121,18 +119,23 @@
                     <button type="button" class="btn btn-info btn-xs">主页</button>
                 </a>
                 <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-info btn-xs">
-                <!-- 下拉按钮 -->
-                评论  ↓</button>
+                <!-- 下拉按钮 -->评论  ↓</button>
+                
             </div>
             <div id="replyArea-{{ forloop.counter }}" class="hidden">
             <!-- 下拉评论区：默认隐藏 -->
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="向卖家咨询详细信息">
-                    <span class="input-group-btn">
-                        <button class="btn btn-info" type="button">发表</button>
-                    </span>
-                </div>
-                <table class="table">
+                <form id="replyForm-{{ forloop.counter }}" action="/deal/{{ item.id }}" method='post'>
+                <!-- 评论表单 -->
+                {% csrf_token %}
+                    <div class="input-group">
+                        <input id="replyInput-{{ forloop.counter }}"  name="text"
+                        type="text" class="form-control" placeholder="向卖家咨询详细信息">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-info" type="button">发表</button>
+                        </span>
+                    </div>
+                </form>
+                <table id="replyTable-{{ forloop.counter }}" class="table">
                 <!-- 评论表格 -->
                     <tr>
                     <!-- 表头 -->
@@ -184,9 +187,12 @@
         // 循环绑定事件
             (function (i) {
                 var area = $('#replyArea-' + i)
+                var form = $('#replyForm-' + i)
+                var input = $('#replyInput-' + i)
                 var button = $('#replyButton-' + i)
-                // 拼接元素
+                // 拼接获取元素
                 button.click(function(){
+                // 点击下拉按钮
                     if (area.attr("class")){
                         area.removeAttr('class')
                         // 移除属性
@@ -198,6 +204,20 @@
                         // 增加属性
                         button.text('评论  ↓')
                     }
+                })
+                form.submit(function(){
+                    $.ajax({
+                        url:form.attr("action"),
+                        type:form.attr("method"),
+                        data:$(this).serialize(),
+                        cache:false,
+                        success:function(){
+                            $("#replyTable-" + i).load(location.href + " #replyTable-" + i)
+                            // 局部刷新表格
+                            input.val('')
+                        },
+                    })
+                    return false
                 })
             })(i)
         }
