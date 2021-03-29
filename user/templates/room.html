@@ -32,16 +32,15 @@
                 </div>
             </div>
         </div>
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">发布文章</div>
+        <div class="panel panel-info">
+            <div class="panel-heading">所有文章</div>
             <div class="panel-body">
                 <strong>共计 {{ atcs.count }} 篇，上次发布于 {{ atcs.first.create_time }}</strong>
             </div>
             <table class="table">
                 <tr>
-                    <th style="width:25%">标题</th>
-                    <th style="width:25%">分类</th>
+                    <th style="width:35%">标题</th>
+                    <th style="width:15%">分类</th>
                     <th style="width:35%">时间</th>
                     {% if user == visitor %}
                         <th style="width:15%">操作</th>
@@ -51,13 +50,13 @@
                     <tr>
                         <td><a href="/blog/{{atc.pk}}">{{ atc.title }}</a></td>
 
-                        <td>{{ atc.type }}</td>
+                        <td><a href="/blog/?type={{ atc.type.name }}">{{ atc.type }}</a></td>
                         
                         {% if atc.create_time == atc.update_time %}
                         <!-- 分类讨论 -->
-                            <td>创建于{{ atc.create_time }}</td>
+                            <td>创建于 {{ atc.create_time }}</td>
                         {% else %}
-                            <td>编辑于{{ atc.update_time }}</td>
+                            <td>编辑于 {{ atc.update_time }}</td>
                         {% endif %}
                         
                         {% if user == visitor %}
@@ -74,23 +73,73 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td>NaN</td>
-                        <td>NaN</td>
-                        <td>NaN</td>
-                        <td>NaN</td>
+                        <td>内容</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
 
+
+        <div class="panel panel-info">
+            <div class="panel-heading">所有物品</div>
+            <table class="table">
+                <tr>
+                    <th style="width:25%">名称</th>
+                    <th style="width:10%">数目</th>
+                    <th style="width:10%">价格</th>
+                    <th style="width:10%">可刀</th>
+                    <th style="width:35%">时间</th>
+                    {% if user == visitor %}
+                        <th style="width:15%">操作</th>
+                    {% endif %}
+                </tr>
+                {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.name }}</strong>
+                        </td>
+                        <td> {{ item.count }} </td>
+                        <td> {{ item.price }} </td>
+
+                        {% if item.chop %}
+                            <td> ✅ </td>
+                        {% else %}
+                            <td> ❌ </td>
+                        {% endif %}
+
+                        <td>{{ item.time }}</td>
+
+                        {% if user == visitor %}
+                        <!-- 非本人禁止操作 -->
+                            <th>
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </th>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td>暂未内容</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
         {% if user == visitor %}
         <!-- 验证身份 -->
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <button  id='exit' type="button" class="btn btn-default" aria-label="Left Align">
+                    <button  id='exit' type="button" class="btn btn-warning" aria-label="Left Align">
                         <span class="glyphicon glyphicon-log-out" aria-hidden="true">（登出）</span>
                     </button>
-                    <button type="button" class="btn btn-default" aria-label="Left Align">
+                    <button type="button" class="btn btn-danger" aria-label="Left Align">
                         <span class="glyphicon glyphicon-off" aria-hidden="true">（注销）</span>
                     </button>
                 </div>

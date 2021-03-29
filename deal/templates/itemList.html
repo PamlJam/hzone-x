@@ -116,11 +116,10 @@
             <div class="panel-footer">
             <!-- 面板的底部 -->
                 <a target = "_blank" href="/user/{{item.owner.id}}">
-                    <button type="button" class="btn btn-info btn-xs">主页</button>
+                    <button type="button" class="btn btn-default btn-xs">进入主页</button>
                 </a>
-                <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-info btn-xs">
-                <!-- 下拉按钮 -->评论  ↓</button>
-                
+                <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-default btn-xs">
+                <!-- 下拉按钮 -->发布评论  ↓</button>
             </div>
             <div id="replyArea-{{ forloop.counter }}" class="hidden">
             <!-- 下拉评论区：默认隐藏 -->
@@ -128,8 +127,8 @@
                 <!-- 评论表单 -->
                 {% csrf_token %}
                     <div class="input-group">
-                        <input id="replyInput-{{ forloop.counter }}"  name="text"
-                        type="text" class="form-control" placeholder="向卖家咨询详细信息">
+                        <input id="replyInput-{{ forloop.counter }}"  name="text"  maxlength="30"
+                        type="text" class="form-control" placeholder="向卖家咨询详细信息（不超过30字）">
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-info" type="button">发表</button>
                         </span>
@@ -139,9 +138,9 @@
                 <!-- 评论表格 -->
                     <tr>
                     <!-- 表头 -->
-                        <th width="10%">用户</th>
-                        <th width="75%">内容</th>
-                        <th width="15%">时间</th>
+                        <th width="20%">用户</th>
+                        <th width="60%">内容</th>
+                        <th width="20%">时间</th>
                     </tr>
                     {% for comment in item.comments %}
                     <!-- 填表 -->
@@ -196,13 +195,13 @@
                     if (area.attr("class")){
                         area.removeAttr('class')
                         // 移除属性
-                        button.text('评论 ↑')
+                        button.text('发布评论 ↑')
                         // 修改样式
                     }
                     else{
                         area.attr("class","hidden")
                         // 增加属性
-                        button.text('评论  ↓')
+                        button.text('发布评论 ↓')
                     }
                 })
                 form.submit(function(){

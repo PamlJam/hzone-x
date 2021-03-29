@@ -7,6 +7,7 @@ from .models import *
 from .forms import *
 from blog.models import Atc
 from django.contrib.auth import *
+from deal.models import Item
 
 class Room(View):
 # 个人空间
@@ -23,6 +24,7 @@ class Room(View):
             # 主人
             'form' : form,
             'atcs' : Atc.objects.filter(author = user),
+            'items' : Item.objects.filter(owner = user),
         }
         return render(request,'room.html',context)
         
