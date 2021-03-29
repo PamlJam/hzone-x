@@ -26,10 +26,9 @@
         </div>
     </div>
 
-
 {% endblock %}
 
-{% block js %} 
+{% block js %}
     <script>
         function loadPage(url){
         // 加载网页
@@ -39,10 +38,9 @@
             // 设置属性
             $('#page').html(page);
         }
-        var wz = $('#wz');
-        var wp = $('#wp');
-        loadPage('/release/article');
-        // 初始界面
+        var wz = $('#wz')
+        var wp = $('#wp')
+
         wz.click(function(){
             wz.addClass('active');
             // 增加类
@@ -53,7 +51,15 @@
         wp.click(function(){
             wp.addClass('active');
             wz.removeClass('active');
-            loadPage('/release/shangping');
+            loadPage('/release/item');
         })
+        loadPage('/release/article');
+        // 初始界面
+        var isItem = {{ isItem }}
+        // 判断来源
+        if ( isItem ){   
+            wp.click()
+            // 模拟点击
+        }
     </script>
 {% endblock %}

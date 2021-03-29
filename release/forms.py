@@ -1,3 +1,4 @@
+from typing import Counter
 from django import forms
 from blog.models import AtcType
 
@@ -12,4 +13,13 @@ class ArticleForm(forms.Form):
     ct = forms.CharField(required=True,widget=forms.Textarea)
     # 内容 <TextField>
     tp = forms.ChoiceField(required=True,choices=type_choices,initial=0)
-    # 种类 
+    # 种类
+
+
+class ItemForm(forms.Form):
+    name = forms.CharField(required = True)
+    info = forms.CharField(required = True,widget=forms.Textarea)
+    price = forms.FloatField(required = True)
+    count = forms.IntegerField(required =  True)
+    chop = forms.BooleanField(required = False)
+    sold = forms.BooleanField(required = False)

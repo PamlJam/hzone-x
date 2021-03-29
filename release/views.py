@@ -5,23 +5,23 @@ from django.views.generic import *
 from .forms import *
 from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
+from deal.models import Item
 
-class ArticleDelete(View):
-# 删除内容
+class ItemEdit(View):
     def get(self,request):
         pk = request.GET.get('pk',default = None)
+        context = {}
         if pk:
-            atc = get_object_or_404(Atc,pk = int(pk))
-            # 获取文章
-            if atc.author == request.user:
-            # 验证权限
-                content_type = ContentType.objects.get_for_model(atc)
-                comments = Comment.objects.filter(content_type = content_type,object_id = atc.pk)
-                comments.delete()
-                # 删除所有互动（评论）
-                atc.delete()
-                # 删除模型 （实际删除）
-        return redirect('/user/' + str(request.user.id))
+            item = get_object_or_404(Item,pk = int(pk))
+            if item.owner == request.user:
+                context['itemId'] = item.pk
+                context['itemName'] = item.name
+                context['itemInfo'] = item.info
+                context['itemPrice'] = item.price
+                context['itemCount'] = item.count
+        request.session['itemPk'] = item.pk
+        request.session['context'] = context
+        return redirect('/release')
 
 class ArticleEdit(View):
 # 编辑文章
@@ -39,6 +39,61 @@ class ArticleEdit(View):
         request.session['ex_atc'] = context
         # 存入原始数据
         return redirect('/release')
+
+class ItemDelete(View):
+    def get(self,request):
+        pk = request.GET.get('pk',default = None)
+        user = request.user
+        if pk:
+            item = get_object_or_404(Item,pk = int(pk))
+            if item.owner == user:
+                content_type = ContentType.objects.get_for_model(item)
+                comments = Comment.objects.filter(content_type = content_type,object_id = item.pk)
+                comments.delete()
+                item.delete()
+        return redirect('/user/' + str(user.id))
+
+class ReleaseItem(View):
+# 发布文章
+    def get(self,request):
+        context = request.session.get('context',default = {})
+        if context == {}:
+            request.session['itemPk'] = None
+        request.session['context'] = {}
+        return render(request,'releaseItem.html',context)
+
+    def post(self,request):
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            info = form.cleaned_data['info']
+            sold = form.cleaned_data['sold']
+            chop = form.cleaned_data['chop']
+            count = form.cleaned_data['count']
+            price = form.cleaned_data['price']
+            pk = request.session.get('itemPk',default = None)
+            if pk != None:
+                exItem = get_object_or_404(Item,pk = pk)
+                exItem.chop = chop
+                exItem.sold = sold
+                exItem.name = name
+                exItem.info = info                
+                exItem.count = count                
+                exItem.price = price
+                exItem.save()
+                request.session['itemPk'] = None
+            else:
+                Item(
+                    name = name,
+                    info = info,
+                    sold = sold,
+                    chop = chop,
+                    count = int(count),
+                    price = float(price),
+                    owner = request.user,
+                ).save()
+        return JsonResponse({})
+
 
 class ReleaseArticle(View):
 # 发布文章
@@ -83,4 +138,26 @@ class ReleaseArticle(View):
 
 class Release(View):
     def get(self,request):
-        return render(request,'release.html',{})
+        context = {}
+        if request.session.get('itemPk',default = None):
+            context['isItem'] = 1
+        else:
+            context['isItem'] = 0
+        return render(request,'release.html',context)
+
+class ArticleDelete(View):
+# 删除内容
+    def get(self,request):
+        pk = request.GET.get('pk',default = None)
+        if pk:
+            atc = get_object_or_404(Atc,pk = int(pk))
+            # 获取文章
+            if atc.author == request.user:
+            # 验证权限
+                content_type = ContentType.objects.get_for_model(atc)
+                comments = Comment.objects.filter(content_type = content_type,object_id = atc.pk)
+                comments.delete()
+                # 删除所有互动（评论）
+                atc.delete()
+                # 删除模型 （实际删除）
+        return redirect('/user/' + str(request.user.id))
