@@ -67,6 +67,7 @@ class ReleaseItem(View):
         return render(request,'releaseItem.html',context)
 
     def post(self,request):
+        context = {}
         form = ItemForm(request.POST,request.FILES)
         # 完全填写表格
         if form.is_valid():
@@ -89,7 +90,7 @@ class ReleaseItem(View):
                 exItem.save()
                 request.session['itemPk'] = None
             else:
-                Item(
+                item = Item(
                     name = name,
                     info = info,
                     sold = sold,
@@ -98,10 +99,15 @@ class ReleaseItem(View):
                     count = int(count),
                     price = float(price),
                     owner = request.user,
-                ).save()
-        return JsonResponse({})
-
-
+                )
+                if image:
+                    item.image = image
+                # 避免自动生成的乱码                    
+                item.save()
+            context['status'] = "SUCCESS"
+        else:
+            context['status'] = "ERROR"
+        return JsonResponse(context)
 class ReleaseArticle(View):
 # 发布文章
     def get(self,request):

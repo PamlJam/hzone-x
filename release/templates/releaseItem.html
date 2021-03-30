@@ -5,15 +5,15 @@
         <!-- 允许上传图片 -->
         {% csrf_token %}
             {% if itemImage %}
-                <img src="/{{ itemImage }}" height="150px">
+                <img id='current_image' src="/{{ itemImage }}" height="150px">
                 <!-- 显示原有图片 -->
                 <hr>
-                <input type="file" name="image" accept="image/*" id="id_image" value="{{ itemImage }}">
-                <!-- 提前填入默认值 -->
+                <input onchange="reads(this)" type="file" name="image" accept="image/*" id="id_image" value="{{ itemImage }}">
+                <!-- 提前填入默认值 ，并且绑定实时渲染函数 -->
             {% else %}
-                <img src="{% static 'image/items/default.png' %}" height="150px">
+                <img id='current_image' src="{% static 'image/items/default.png' %}" height="150px">
                 <hr>
-                <input type="file" name="image" accept="image/*" id="id_image">
+                <input onchange="reads(this)" type="file" name="image" accept="image/*" id="id_image">
             {% endif %}
             <br><br>
             <input type="text" name="name" placeholder="输入商品名称" value="{{ itemName }}"
@@ -54,9 +54,6 @@
                         url:form.attr('href'),
                         type:form.attr('method'),
                         data:data,
-                        datatype:'JSON',
-                        contentType: false,
-                        processData: false,  
                         cache:false,
                         success:function(context){
                             $('#id_name').val('')
@@ -66,10 +63,16 @@
                             $('#id_image').val('')
                             $("#id_sold").attr("checked",false)
                             $("#id_chop").attr("checked",false)
-                            // 初始状态
-                            var result = confirm("发布成功，是否前去查看")
-                            if (result == true){ 
-                                top.location.href = "/deal";
+                            // 回到初始状态
+                            var status = context['status']
+                            if (status == "SUCCESS"){
+                                var result = confirm("发布成功，是否前去查看")
+                                if (result == true){ 
+                                    top.location.href = "/deal";
+                                }
+                            }
+                            else {
+                                alert('发布失败')
                             }
                         },
                     })
@@ -77,4 +80,16 @@
                 }
             })
         </script>
+        <script>
+            function reads(obj) {
+            // 实时渲染上传图片
+                var file = obj.files[0];
+                var reader = new  FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (ev) {
+                    $('#current_image').attr("src", ev.target.result);
+                    // 标签属性选择器
+                }
+            }
+       </script>
     {% endblock %}

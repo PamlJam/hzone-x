@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
     hzone | 交易
 {% endblock %}
@@ -85,8 +85,12 @@
                 <!-- 媒体对象 -->
                     <div class="media-left media-middle">
                     <!-- 靠左 垂直居中 -->
-                    <img src="/{{ item.image }}" style="height:200px" class="media-object img-thumbnail" >
-                    <!-- 图片添加圆角 -->
+                    {% if item.image %}
+                        <img src="/{{ item.image }}" style="height:200px" class="media-object img-thumbnail" >
+                        <!-- 图片添加圆角 -->
+                    {% else %}
+                        <img src="{% static 'image/items/default.png' %}" style="height:200px" class="media-object img-thumbnail" >
+                    {% endif %}
                     </div>
                     <div class="media-body">
                         <h4>{{ item.name }}</h4>
