@@ -19,6 +19,9 @@ class ItemEdit(View):
                 context['itemInfo'] = item.info
                 context['itemPrice'] = item.price
                 context['itemCount'] = item.count
+                context['itemImage'] = str(item.image)
+                print(str(item.image))
+                # 必须传入Json格式
         request.session['itemPk'] = item.pk
         request.session['context'] = context
         return redirect('/release')
@@ -56,6 +59,7 @@ class ItemDelete(View):
 class ReleaseItem(View):
 # 发布文章
     def get(self,request):
+        form = ItemForm()
         context = request.session.get('context',default = {})
         if context == {}:
             request.session['itemPk'] = None
@@ -63,8 +67,10 @@ class ReleaseItem(View):
         return render(request,'releaseItem.html',context)
 
     def post(self,request):
-        form = ItemForm(request.POST)
+        form = ItemForm(request.POST,request.FILES)
+        # 完全填写表格
         if form.is_valid():
+            image = form.cleaned_data['image']
             name = form.cleaned_data['name']
             info = form.cleaned_data['info']
             sold = form.cleaned_data['sold']
@@ -88,6 +94,7 @@ class ReleaseItem(View):
                     info = info,
                     sold = sold,
                     chop = chop,
+                    image = image,
                     count = int(count),
                     price = float(price),
                     owner = request.user,

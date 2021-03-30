@@ -14,9 +14,9 @@ class Item(Model):
     owner = ForeignKey(User,on_delete = DO_NOTHING)
     price = FloatField(default=0)
     # 价格
+    image = ImageField(default="./static/image/items/default.png",upload_to='./static/image/items/upload/')
     def __str__(self):
         return '物品-' + self.name
-
     class Meta:
         ordering=['-time']
         verbose_name = '物品'
