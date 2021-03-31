@@ -25,7 +25,10 @@ SECRET_KEY = '&hsvs45^n4#b2m2r0^x)y2e=59*q9zd)jm*_%v!9xf^f@7@68c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+     '192.168.43.150',
+     # 手机热点
+]
 
 
 # Application definition
