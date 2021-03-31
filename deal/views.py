@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
 from comment.forms import CommentForm
 from django.http.response import JsonResponse
+from collect.models import Collection
 
 class itemDetail(View):
     def post(self,request,pk):
@@ -26,7 +27,8 @@ class itemDetail(View):
 
 class itemList(View):
     def get(self,request):
-        items = Item.objects.all()
+        items = Item.objects.filter(sold = False)
+        # 获取所有待售商品
         chopable = request.GET.get('chop',default = None)
         # 获取条件
         if chopable == '1':
@@ -42,7 +44,19 @@ class itemList(View):
         if search:
             items = commonSearch(Item,'name',search)
             # 调用自定义搜索函数
+        
+        type = ContentType.objects.get_for_model(Item())
+        collections = Collection.objects.filter(user = request.user,content_type = type)
+        # 筛选收藏 （通过object_id获取某用户收藏某商品的id）
+        collect_ids = [c.object_id for c in collections]
+        # id 集合
         for item in items:
+            if item.id in collect_ids:
+            # 打上标记
+                item.is_collected = True
+            else:
+                item.is_collected = False
+            item.save()
             content_type = ContentType.objects.get_for_model(item)
             # 对象的类
             comments = Comment.objects.filter(content_type = content_type,object_id = item.pk)

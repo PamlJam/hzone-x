@@ -19,7 +19,7 @@
             <br>
             <a href="/deal">
                 <button type="button" class="btn btn-info">
-                    所有商品 <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    所有商品 <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
                 </button>
             </a>
             {% if sort == 'price' %}
@@ -81,7 +81,7 @@
     {% for item in items %}
         <div class="panel panel-info">
             <div class="panel-body">
-                <div class="media">
+                <div class="media" id = 'item-{{ item.id }}'>
                 <!-- 媒体对象 -->
                     <div class="media-left media-middle">
                     <!-- 靠左 垂直居中 -->
@@ -118,11 +118,31 @@
 
             <div class="panel-footer">
             <!-- 面板的底部 -->
-                <a target = "_blank" href="/user/{{item.owner.id}}">
-                    <button type="button" class="btn btn-default btn-xs">进入主页</button>
-                </a>
-                <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-default btn-xs">
-                <!-- 下拉按钮 -->发布评论  ↓</button>
+                <div align="left" style="float:left">
+                <!-- 同一行靠左 -->
+                    {% if item.owner == user %}
+                        <button type="button" class="btn btn-success btn-xs">我的商品</button>
+                    {% else %}
+                        <a target = "_blank" href="/user/{{item.owner.id}}">
+                            <button type="button" class="btn btn-default btn-xs">进入主页 🏠</button>
+                        </a>
+                    {% endif %}
+                    <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-default btn-xs">
+                    <!-- 下拉按钮 -->发布评论 ▼</button>
+                </div>
+    
+                <div align="right">
+                <!-- 同一行靠右 -->
+                    <a href="/collect/{{ item.pk }}">
+                        {% if item.is_collected %}
+                            <button id="demark-{{ forloop.counter }}" type="button"
+                                class="btn btn-danger btn-xs">已标记</button>
+                        {% else %}
+                            <button id="mark-{{ forloop.counter }}" type="button" 
+                                class="btn btn-default btn-xs">未标记 🚩</button>
+                        {% endif %}
+                    </a>
+                </div>
             </div>
             <div id="replyArea-{{ forloop.counter }}" class="hidden">
             <!-- 下拉评论区：默认隐藏 -->
@@ -131,7 +151,7 @@
                 {% csrf_token %}
                     <div class="input-group">
                         <input id="replyInput-{{ forloop.counter }}"  name="text"  maxlength="30"
-                        type="text" class="form-control" placeholder="向卖家咨询详细信息（不超过30字）">
+                        type="text" class="form-control" placeholder="咨询详细信息（不超过30字）">
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-info" type="button">发表</button>
                         </span>
@@ -148,9 +168,18 @@
                     {% for comment in item.comments %}
                     <!-- 填表 -->
                         <tr>
-                            <td>
-                                <a href="/user/{{comment.user.id}}">{{ comment.user }}</a>
-                            </td>
+                            {% if comment.user == item.owner %}
+                                <td>
+                                    <a href="/user/{{comment.user.id}}">
+                                        <strong><em>（卖家）</em></strong>
+                                        {{ comment.user }}
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a href="/user/{{comment.user.id}}">{{ comment.user }}</a>
+                                </td>
+                            {% endif %}
                             <td>{{ comment.text }}</td>
                             <td>{{ comment.time | date:"Y-m-d"}}</td>
                         </tr>
@@ -173,6 +202,28 @@
     {% endfor %}
 {% endblock %}
 
+{% block side %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">所有标记</h3>
+        </div>
+        <ul class="list-group">
+        <!-- 收藏列表 -->
+            {% for item in items %}
+                {% if item.is_collected %}
+                    <li class="list-group-item">
+                        <a href="#item-{{ item.id }}">
+                        <!-- 本页跳转 -->
+                            <span class="label label-info">{{ item.name }}</span> ￥ {{ item.price }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% empty %}
+                <li class="list-group-item">暂无标记内容</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
 {% block js %}
     <script>
         $('#search-button').click(function(){
@@ -198,13 +249,13 @@
                     if (area.attr("class")){
                         area.removeAttr('class')
                         // 移除属性
-                        button.text('发布评论 ↑')
+                        button.text('发布评论 ▲')
                         // 修改样式
                     }
                     else{
                         area.attr("class","hidden")
                         // 增加属性
-                        button.text('发布评论 ↓')
+                        button.text('发布评论 ▼')
                     }
                 })
                 form.submit(function(){
@@ -220,6 +271,25 @@
                         },
                     })
                     return false
+                })
+            })(i)
+        }
+    </script>
+
+    <script>
+    // 标记/取消标记
+        var len = {{ items.count }}
+        for(var i=1;i<=len;i++){
+            (function (i) {
+                $('#demark-' + i).click(function(){
+                    if (confirm('是否取消标记') == false){
+                        return false
+                    }
+                })
+                $('#mark-' + i).click(function(){
+                    if (confirm('是否标记') == false){
+                        return false
+                    }
                 })
             })(i)
         }

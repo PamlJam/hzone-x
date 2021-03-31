@@ -14,8 +14,12 @@
                 <h3 class = "text-center">{{ atc.title }}</h3>
                 <!-- 标题居中 -->
                 <hr>
-                <p>{{ content | safe }}</p>
-                <!-- 已经转换为html标签了 -->
+                <p><font style="font-family:microsoft yahei;font-size:120%;"> {{ content | safe }} </font></p>
+                <!-- 
+                    1. 设置字体 ： 微软雅黑
+                    2. 同比放大 ： 120%
+                    3. 安全模式 ： 支持html语法
+                -->
                 {% if atc.create_time == atc.update_time%}
                 <!-- 不同时显示 -->
                     <p class="text-right"><font color = gray>发布于{{ atc.create_time }}</font></p>

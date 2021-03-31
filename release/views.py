@@ -1,3 +1,4 @@
+from typing import Collection
 from blog.models import Atc
 from django.http.response import JsonResponse
 from django.shortcuts import *
@@ -6,7 +7,7 @@ from .forms import *
 from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
 from deal.models import Item
-
+from collect.models import Collection
 class ItemEdit(View):
     def get(self,request):
         pk = request.GET.get('pk',default = None)
@@ -52,7 +53,9 @@ class ItemDelete(View):
             if item.owner == user:
                 content_type = ContentType.objects.get_for_model(item)
                 comments = Comment.objects.filter(content_type = content_type,object_id = item.pk)
+                collections = Collection.objects.filter(content_type = content_type,object_id = item.pk)
                 comments.delete()
+                collections.delete()
                 item.delete()
         return redirect('/user/' + str(user.id))
 

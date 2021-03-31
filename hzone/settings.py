@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'user',
     'blog',
     'deal',
-    'comment',
     'release',
+    'collect',
+    # 收藏夹
+    'comment',
+    # 评论区
 ]
 
 MIDDLEWARE = [
