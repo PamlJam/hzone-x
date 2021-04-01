@@ -54,6 +54,7 @@ class ItemDelete(View):
                 content_type = ContentType.objects.get_for_model(item)
                 comments = Comment.objects.filter(content_type = content_type,object_id = item.pk)
                 collections = Collection.objects.filter(content_type = content_type,object_id = item.pk)
+                # 该商品所有收藏数
                 comments.delete()
                 collections.delete()
                 item.delete()

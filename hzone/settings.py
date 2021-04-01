@@ -28,8 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
      '192.168.43.150',
      # 手机热点
+     '127.0.0.1',
+     # 本地服务器
 ]
-
 
 # Application definition
 

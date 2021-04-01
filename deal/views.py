@@ -38,13 +38,11 @@ class itemList(View):
         # 排序条件
         if sort:
             items = items.order_by(sort)
-
         search = request.GET.get('search',default = None)
         # 搜索关键词
         if search:
             items = commonSearch(Item,'name',search)
             # 调用自定义搜索函数
-        
         type = ContentType.objects.get_for_model(Item())
         collections = Collection.objects.filter(user = request.user,content_type = type)
         # 筛选收藏 （通过object_id获取某用户收藏某商品的id）

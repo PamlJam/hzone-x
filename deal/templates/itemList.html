@@ -9,7 +9,7 @@
         <div class="panel-body">
             <div class="input-group">
             <!-- 输入框组 -->
-                <input id='search-input' type="text" class="form-control" placeholder="Search for Items ...">
+                <input id='search-input' type="text" class="form-control" placeholder="搜索物品名...">
                 <span class="input-group-btn">
                     <button id='search-button' class="btn btn-default" type="button">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -74,10 +74,26 @@
                         只看可刀 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                     </button>
                 </a>
-            {% endif %}            
+            {% endif %}
         </div>
     </div>
 
+	<style type="text/css">
+        * {
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height:100%;
+        }
+		.htmleaf-content img{
+			height: 200px;
+		}
+		.htmleaf-content img.lightense-open{
+            height:300px;
+            display: inline-block;
+		}
+	</style>
     {% for item in items %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -86,10 +102,15 @@
                     <div class="media-left media-middle">
                     <!-- 靠左 垂直居中 -->
                     {% if item.image %}
-                        <img src="/{{ item.image }}" style="height:200px" class="media-object img-thumbnail" >
-                        <!-- 图片添加圆角 -->
+                        <div class="htmleaf-content">
+                            <div class="media-object img-thumbnail">
+                            <!-- 圆角边框 -->
+                                <img class="zoom" src="/{{ item.image }}">
+                            </div>
+                        </div>
                     {% else %}
                         <img src="{% static 'image/items/default.png' %}" style="height:200px" class="media-object img-thumbnail" >
+                        <!-- 显示默认图片 -->
                     {% endif %}
                     </div>
                     <div class="media-body">
@@ -128,7 +149,7 @@
                         </a>
                     {% endif %}
                     <button id="replyButton-{{ forloop.counter }}" type="button" class="btn btn-default btn-xs">
-                    <!-- 下拉按钮 -->发布评论 ▼</button>
+                    <!-- 下拉按钮 -->发布评论（{{ item.comments.count }}） ▼</button>
                 </div>
     
                 <div align="right">
@@ -139,7 +160,7 @@
                                 class="btn btn-danger btn-xs">已标记</button>
                         {% else %}
                             <button id="mark-{{ forloop.counter }}" type="button" 
-                                class="btn btn-default btn-xs">未标记 🚩</button>
+                                class="btn btn-default btn-xs">标记 🚩</button>
                         {% endif %}
                     </a>
                 </div>
@@ -214,8 +235,9 @@
                     <li class="list-group-item">
                         <a href="#item-{{ item.id }}">
                         <!-- 本页跳转 -->
-                            <span class="label label-info">{{ item.name }}</span> ￥ {{ item.price }}
+                            <span class="label label-info">{{ item.name }}</span>
                         </a>
+                        ￥<strong><em> {{ item.price }}</em></strong>
                     </li>
                 {% endif %}
             {% empty %}
@@ -225,6 +247,17 @@
     </div>
 {% endblock %}
 {% block js %}
+	<script type="text/javascript" src="{% static 'js/lightense.js' %}">
+    // 载入插件
+    // 不写代码 **
+    </script>
+	<script type="text/javascript">
+    // 插件初始化
+		window.addEventListener('load', function () {
+		  var el = document.querySelectorAll('img.zoom:not(.no-lightense),.lightense');
+		  Lightense(el);
+		  }, false);
+	</script>
     <script>
         $('#search-button').click(function(){
             var input = $('#search-input').val()
@@ -249,13 +282,13 @@
                     if (area.attr("class")){
                         area.removeAttr('class')
                         // 移除属性
-                        button.text('发布评论 ▲')
+                        button.val('发布评论（{{ item.comments.count }}） ▲')
                         // 修改样式
                     }
                     else{
                         area.attr("class","hidden")
                         // 增加属性
-                        button.text('发布评论 ▼')
+                        button.val('发布评论（{{ item.comments.count }}） ▼')
                     }
                 })
                 form.submit(function(){
