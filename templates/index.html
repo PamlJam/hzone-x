@@ -17,6 +17,7 @@
                     <!-- 设置宽度 -->
                 </tr>
                 {% for link,text,date in infos %}
+                <!-- 同时遍历 -->
                     <tr>
                         <th style="width:70%">
                             <a href="{{ link }}">{{ text }}</a>
@@ -30,8 +31,8 @@
     {% endblock %}
 
     {% block side %}
-
-    {% endblock %}
-
-    {% block js %}
+        <iframe scrolling="yes" src="https://tianqiapi.com/api.php?style=tr&skin=pitaya" 
+            frameborder="0" width="100%" height="220px" allowtransparency="true">
+        <!-- 天气插件 https://www.tianqiapi.com/index/plugin -->
+        </iframe>
     {% endblock %}
