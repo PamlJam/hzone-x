@@ -77,23 +77,6 @@
             {% endif %}
         </div>
     </div>
-
-	<style type="text/css">
-        * {
-            margin:0;
-            padding:0;
-        }
-        html,body{
-            height:100%;
-        }
-		.htmleaf-content img{
-			height: 200px;
-		}
-		.htmleaf-content img.lightense-open{
-            height:300px;
-            display: inline-block;
-		}
-	</style>
     {% for item in items %}
         <div class="panel panel-info">
             <div class="panel-body">
@@ -102,11 +85,9 @@
                     <div class="media-left media-middle">
                     <!-- 靠左 垂直居中 -->
                     {% if item.image %}
-                        <div class="htmleaf-content">
-                            <div class="media-object img-thumbnail">
-                            <!-- 圆角边框 -->
-                                <img class="zoom" src="/{{ item.image }}">
-                            </div>
+                        <div class="media-object img-thumbnail">
+                        <!-- 圆角边框 -->
+                            <img height="200px" src="/{{ item.image }}">
                         </div>
                     {% else %}
                         <img src="{% static 'image/items/default.png' %}" style="height:200px" class="media-object img-thumbnail" >
@@ -247,17 +228,40 @@
     </div>
 {% endblock %}
 {% block js %}
-	<script type="text/javascript" src="{% static 'js/lightense.js' %}">
-    // 载入插件
-    // 不写代码 **
-    </script>
-	<script type="text/javascript">
-    // 插件初始化
-		window.addEventListener('load', function () {
-		  var el = document.querySelectorAll('img.zoom:not(.no-lightense),.lightense');
-		  Lightense(el);
-		  }, false);
-	</script>
+    <!--图片放大后的div 开始  这块粘贴在你的html中最后body前 -->
+    <div id="outerdiv" style="text-align: center;position: fixed;z-index: 9999;top: 0;left: 0;
+        width: 100%;height: 100%;background-color: rgba(28,28,28,0.9);">
+        <img id="bigimg" style="max-height: 800px;max-width: 100%;border: 0; 
+            margin: auto;position: absolute;top: 0;bottom: 0;left: 0;right: 0;" src="" />
+    </div> 
+    <!--图片放大后的div 结束 这块粘贴在你的html中最后body前-->
+
+    <!--js开始 是放大点击的触发事件 这块粘贴在你的html中最后body前 需要依赖jquery-->
+    <script type="text/javascript"> 
+        //图片放大  
+        $("#outerdiv").hide();
+        $(function(){  
+            $("img").mouseover(function(){
+                $(this).css("cursor","pointer");
+            });
+
+            $("img").click(function(){  
+                var _this = $(this);//将当前的pimg元素作为_this传入函数    
+                imgShow("#outerdiv", "#bigimg", _this);    
+            });     
+        });    
+
+        function imgShow(outerdiv, bigimg, _this){  
+            var src = _this.attr("src");//获取当前点击的pimg元素中的src属性    
+            $('#outerdiv').attr('display','block');  
+            $(bigimg).attr("src", src);//设置#bigimg元素的src属性    
+            $(outerdiv).fadeIn("fast");  
+        }
+        $(outerdiv).click(function(){//再次点击淡出消失弹出层    
+            $(this).fadeOut("fast");    
+        });    
+    </script>  
+    <!--js开始 是放大点击的触发事件 这块粘贴在你的html中最后body前 需要依赖jquery-->
     <script>
         $('#search-button').click(function(){
             var input = $('#search-input').val()
