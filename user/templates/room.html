@@ -10,14 +10,13 @@
                 <div class="media">
                 <!-- 媒体对象 -->
                     <div class="media-left media-middle">
-                        <img id = 'icon' class="img-circle" src="/{{ user.icon }}" height="100px" width="100px">
-                        {% if user == visitor %}
-                            <img id = 'hover_icon' class="img-circle" src="{% static 'image/icon/default/upload.jpg' %}" height="100px" width="100px">
-                            <!-- 圆形显示头像 -->
-                        {% endif %}
+                        <a href="#" data-toggle="tooltip" title="您可以点击更换头像">
+                        <!-- 悬浮提示 -->
+                            <img id = 'icon' class="img-circle" src="/{{ user.icon }}" height="100px" width="100px">
+                        </a>
                     </div>
                     <div class="media-body">
-                        <h1 class="media-heading">{{ user }}</h1>
+                        <h1 class="media-heading"><strong>{{ user }}</strong></h1>
                         <form id='user_form' enctype="multipart/form-data" action="./{{ user.id }}" method="post">
                         <!-- 确认编码格式 以二进制上传文件 -->
                             {% csrf_token %}
@@ -185,7 +184,6 @@
 
         <script>
             $('#id_icon').hide();
-            $('#hover_icon').hide();
             $('#submit_btn').hide();
             // 隐藏控件
             $("#id_motto").attr("disabled","disabled");
@@ -194,32 +192,22 @@
 
         {% if user == visitor %}
             <script>
-                $("#id_motto").removeAttr("disabled");
+                $("#id_motto").removeAttr("disabled")
                 // 允许编辑
-                $("#icon").hover(function() {
-                // 鼠标悬浮 切换图片
-                    $('#hover_icon').show();
-                    $('#icon').hide();
-                    // 复现
-                }, function(){
-                // 移出范围
-                    $('#hover_icon').hide();
-                    $('#icon').show();
-                });
-                $('#hover_icon').click(function(){
+                $('#icon').click(function(){
                 // 监测点击
                     $('#id_icon').click();
                     // 模拟点击
-                });
+                })
                 $("#id_icon").bind('input porpertychange', function () {
                 // 监测文件变化
                     $('#submit_btn').click();
                     // 自动提交
-                });
+                })
                 $("#id_motto").blur(function(){
                 // 输入框失去鼠标焦点
                     $('#submit_btn').click();
-                });
+                })
             </script>
         {% endif %}
 

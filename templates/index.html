@@ -12,17 +12,19 @@
             <table class="table">
             <!-- 表格 -->
                 <tr>
-                    <th style="width:70%" class="text-center">标题</th>
-                    <th style="width:30%" class="text-center">时间</th>
+                    <th style="width:50%" class="text-center">标题</th>
+                    <th style="width:30%" class="text-center">部门</th>
+                    <th style="width:15%" class="text-center">时间</th>
                     <!-- 设置宽度 -->
                 </tr>
-                {% for link,text,date in infos %}
+                {% for link,unit,text,date in infos %}
                 <!-- 同时遍历 -->
                     <tr>
-                        <th style="width:70%">
-                            <a href="{{ link }}">{{ text }}</a>
+                        <th style="width:50%">
+                            <a href="{{ link }}" target = "_blank">{{ text }}</a>
                         </th>
-                        <th style="width:30%" class="text-center">{{ date }}</th>
+                        <th style="width:30%">{{ unit }}</th>                   
+                        <th style="width:15%" class="text-center">{{ date }}</th>
                         <!-- 设置宽度 -->
                     </tr>
                 {% endfor %}
