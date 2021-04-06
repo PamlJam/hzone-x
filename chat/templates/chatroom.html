@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}
+    hzone | 聊天
+{% endblock %}
+
+{% block main %}
+    <div>
+        <input type="text" id="text" placeholder="输入文本">
+        <!-- 输入文本 -->
+        <input type="button" value="发送消息" onclick="sendMsg()">
+        <!-- 绑定事件 -->
+        <input type="button" value="断开链接" onclick="exit_room()">
+    </div>
+    <h1>历史记录</h1>
+
+    <div id="content">
+    <!-- 存放消息文本 -->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var host = location.host
+        // 获取主机
+        var ws = new WebSocket('ws://' + host + '/chat/')
+        // 构造函数
+        ws.onopen = function () {
+        // 握手监听
+            alert('连接成功')
+            // 提示消息
+        }
+
+        function sendMsg() {
+        // 事件响应
+            ws.send($('#text').val())
+            // 发送消息
+            $('#text').val('')
+            // 清空输入
+        }
+
+        ws.onmessage = function (event) {
+        // 接收消息
+            var dataValue = event.data;
+            // 获取数据
+            var pEle = $('<p>')
+            // 动态渲染 DOM
+            pEle.text(dataValue)
+            // 写入文本
+            $('#content').append(pEle)
+            // 添加消息
+        };
+        function exit_room() {
+            ws.close()
+            // 断开链接
+            alert('连接断开')
+        }
+    </script>
+{% endblock %}

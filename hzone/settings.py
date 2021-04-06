@@ -45,12 +45,20 @@ INSTALLED_APPS = [
     'user',
     'blog',
     'deal',
+    'chat',
     'release',
     'collect',
     # 收藏夹
     'comment',
     # 评论区
+    'channels',
 ]
+
+ASGI_APPLICATION = 'hzone.routing.application'
+# 启动参数
+'''
+ASGI_APPLICATION = '<项目应用>.<模块>.<默认变量 application>'
+'''
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

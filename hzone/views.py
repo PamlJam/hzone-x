@@ -13,6 +13,3 @@ class Index(View):
             # 爬虫取值
         })
         return response
-class About(View):
-    def get(self,request):
-        return render(request,'about.html',{})
